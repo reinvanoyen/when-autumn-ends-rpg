@@ -1,5 +1,5 @@
 import ECS from 'tnt-ecs';
-import Vec2 from 'tnt-vec2';
+const Vector2 = require('gl-matrix').vec2;
 
 /*
 
@@ -16,12 +16,11 @@ export default class MovementSystem extends ECS.System {
     
     update(entity) {
 
-        let position = new Vec2(entity.components.position.x, entity.components.position.y);
-        let velocity = new Vec2(entity.components.velocity.x, entity.components.velocity.y);
+        let position = Vector2.fromValues(entity.components.position.x, entity.components.position.y);
         
-        let newPosition = position.add(velocity);
+        Vector2.add(position, position, Vector2.fromValues(entity.components.velocity.x, entity.components.velocity.y));
         
-        entity.components.position.x = newPosition.x;
-        entity.components.position.y = newPosition.y;
+        entity.components.position.x = position[0];
+        entity.components.position.y = position[1];
     }
 }

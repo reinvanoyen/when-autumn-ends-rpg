@@ -27,8 +27,6 @@ export default class TimeSystem extends ECS.System {
     postUpdate() {
         
         this.worldTime.tick();
-
-        console.log(this.worldTime.getTimeString());
         
         this.timeAmbientColorFilter.ambientColor = this.worldTime.getTimeAmbientColor();
         this.dayAmbientColorFilter.ambientColor = this.worldTime.getDayAmbientColor();

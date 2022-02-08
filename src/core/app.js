@@ -25,6 +25,7 @@ import math from "../util/math";
 import ControllerSystem from "../systems/controller-system";
 import WalkingBehavior from "../components/walking-behavior";
 import WalkingBehaviorSystem from "../systems/walking-behavior-system";
+import AccelerationSystem from "../systems/acceleration-system";
 
 export default class App {
 
@@ -40,6 +41,7 @@ export default class App {
     bind() {
         // Logic
         this.ecs.addSystem(new MovementSystem());
+        this.ecs.addSystem(new AccelerationSystem());
         this.ecs.addSystem(new ControllerSystem());
         this.ecs.addSystem(new WalkingBehaviorSystem());
         
@@ -79,15 +81,12 @@ export default class App {
         }
 
         let camera = new ECS.Entity([
+            new Sprite({
+                src: './assets/character.png'
+            }),
             new Camera(),
-            new Disc({
-                color: 0XF14000
-            }),
             new Position(),
-            new Velocity({
-                x: 0,
-                y: 0
-            }),
+            new Velocity(),
             new CharacterController(),
             new WalkingBehavior()
         ]);

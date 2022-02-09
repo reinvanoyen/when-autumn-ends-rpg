@@ -16,11 +16,12 @@ export default class AnimationRenderingSystem extends ECS.System {
         
         let { animatedSprite } = entity.components;
         
-        PIXI.Loader.shared
-            .add(animatedSprite.src)
+        let loader = new PIXI.Loader();
+        
+        loader.add(animatedSprite.src)
             .load(() => {
 
-                entity.spritesheet = PIXI.Loader.shared.resources[animatedSprite.src].spritesheet;
+                entity.spritesheet = loader.resources[animatedSprite.src].spritesheet;
                 entity.animatedSprite = new PIXI.AnimatedSprite(entity.spritesheet.animations[animatedSprite.animation]);
                 entity.animatedSprite.animationSpeed = animatedSprite.speed;
                 entity.animatedSprite.play();

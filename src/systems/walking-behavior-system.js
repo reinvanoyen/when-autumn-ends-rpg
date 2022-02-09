@@ -34,8 +34,8 @@ export default class WalkingBehaviorSystem extends ECS.System {
                 
                 Vector2.add(forceVec2, forceVec2, Vector2.fromValues(walkingBehavior.x, walkingBehavior.y));
                 
-                velocity.forceX = forceVec2[0];
-                velocity.forceY = forceVec2[1];
+                velocity.x = forceVec2[0];
+                velocity.y = forceVec2[1];
                 
                 if (walkingBehavior.x === 0) {
                     let lerpedVelocity = Vector2.fromValues(velocity.x, velocity.y);

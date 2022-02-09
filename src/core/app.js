@@ -26,6 +26,8 @@ import ControllerSystem from "../systems/controller-system";
 import WalkingBehavior from "../components/walking-behavior";
 import WalkingBehaviorSystem from "../systems/walking-behavior-system";
 import AccelerationSystem from "../systems/acceleration-system";
+import AnimationRenderingSystem from "../systems/animation-rendering-system";
+import AnimatedSprite from "../components/animated-sprite";
 
 export default class App {
 
@@ -40,10 +42,10 @@ export default class App {
     
     bind() {
         // Logic
-        this.ecs.addSystem(new MovementSystem());
         this.ecs.addSystem(new AccelerationSystem());
         this.ecs.addSystem(new ControllerSystem());
         this.ecs.addSystem(new WalkingBehaviorSystem());
+        this.ecs.addSystem(new MovementSystem());
         
         // Rendering
         let renderingSystem = new RenderingSystem();
@@ -51,39 +53,42 @@ export default class App {
         this.ecs.addSystem(new CameraSystem(renderingSystem));
         this.ecs.addSystem(new TimeSystem(renderingSystem.root));
         this.ecs.addSystem(new DiscRenderingSystem(renderingSystem.root));
+        this.ecs.addSystem(new AnimationRenderingSystem(renderingSystem.root));
         this.ecs.addSystem(new SpriteRenderingSystem(renderingSystem.root));
         this.ecs.addSystem(new TextRenderingSystem(renderingSystem.root));
         this.ecs.addSystem(new LineRenderingSystem(renderingSystem.root));
 
-        for (let i = 0; i < 200; i++) {
+        for (let i = 0; i < 20; i++) {
             this.ecs.addEntity(new ECS.Entity([
                 new Sprite({
-                    src: './assets/tiles.png'
+                    src: './assets/tiles.png',
+                    scaleX: 1,
+                    scaleY: 1
                 }),
                 new Position({
-                    x: math.randBetweenPosNeg(-1000, 1000),
-                    y: math.randBetweenPosNeg(-1000, 1000)
+                    x: math.randBetweenPosNeg(-2000, 2000),
+                    y: math.randBetweenPosNeg(-2000, 2000)
                 })
             ]));
         }
         
-        for (let i = 0; i < 200; i++) {
+        for (let i = 0; i < 20; i++) {
             this.ecs.addEntity(new ECS.Entity([
                 new Disc(),
                 new Sprite({
-                    src: './assets/house-1.png'
+                    src: './assets/house-1.png',
+                    scaleX: 1,
+                    scaleY: 1
                 }),
                 new Position({
-                    x: math.randBetweenPosNeg(-1000, 1000),
-                    y: math.randBetweenPosNeg(-1000, 1000)
+                    x: math.randBetweenPosNeg(-2000, 2000),
+                    y: math.randBetweenPosNeg(-2000, 2000)
                 })
             ]));
         }
 
         let camera = new ECS.Entity([
-            new Sprite({
-                src: './assets/character.png'
-            }),
+            new AnimatedSprite(),
             new Camera(),
             new Position(),
             new Velocity(),

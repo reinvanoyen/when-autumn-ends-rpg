@@ -10,7 +10,7 @@ export default class Camera extends ECS.Component {
         return {
             offsetX: 0,
             offsetY: 0,
-            zoom: 3
+            zoom: 2
         };
     }
 }

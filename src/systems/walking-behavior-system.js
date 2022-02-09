@@ -17,6 +17,15 @@ export default class WalkingBehaviorSystem extends ECS.System {
         
         let { walkingBehavior, velocity } = entity.components;
         
+        if (entity.components.animatedSprite) {
+            entity.components.animatedSprite.animation = (walkingBehavior.isWalking ? 'walk' : 'idle');
+            entity.components.animatedSprite.speed = (walkingBehavior.isWalking ? .2 : .05);
+            entity.components.animatedSprite.scaleX = 1;
+            if (walkingBehavior.x < 0) {
+                entity.components.animatedSprite.scaleX = -1;
+            }
+        }
+        
         if (velocity) {
             
             if (walkingBehavior.isWalking) {

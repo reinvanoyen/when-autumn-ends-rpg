@@ -3,9 +3,9 @@ import { Graphics } from 'pixi.js';
 
 export default class LineRenderingSystem extends ECS.System {
     
-    constructor(root) {
+    constructor(renderingSystem) {
         super();
-        this.root = root;
+        this.renderingSystem = renderingSystem;
     }
     
     test(entity) {
@@ -14,11 +14,11 @@ export default class LineRenderingSystem extends ECS.System {
 
     enter(entity) {
         entity.line = new Graphics();
-        this.root.addChild(entity.line);
+        this.renderingSystem.addChild(entity.line);
     }
 
     exit(entity) {
-        this.root.removeChild(entity.line);
+        this.renderingSystem.root.removeChild(entity.line);
         delete entity.line;
     }
 

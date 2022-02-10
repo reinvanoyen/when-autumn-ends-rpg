@@ -3,9 +3,9 @@ import { Text } from 'pixi.js';
 
 export default class TextRenderingSystem extends ECS.System {
     
-    constructor(root) {
+    constructor(renderingSystem) {
         super();
-        this.root = root;
+        this.renderingSystem = renderingSystem;
     }
     
     test(entity) {
@@ -22,12 +22,12 @@ export default class TextRenderingSystem extends ECS.System {
         
         entity.text.anchor.x = .5;
         entity.text.anchor.y = .5;
-        
-        this.root.addChild(entity.text);
+
+        this.renderingSystem.root.addChild(entity.text);
     }
 
     exit(entity) {
-        this.root.removeChild(entity.text);
+        this.renderingSystem.root.removeChild(entity.text);
         delete entity.text;
     }
 

@@ -3,9 +3,9 @@ import { Graphics } from 'pixi.js';
 
 export default class DiscRenderingSystem extends ECS.System {
     
-    constructor(root) {
+    constructor(renderingSystem) {
         super();
-        this.root = root;
+        this.renderingSystem = renderingSystem;
     }
     
     test(entity) {
@@ -14,11 +14,11 @@ export default class DiscRenderingSystem extends ECS.System {
 
     enter(entity) {
         entity.disc = new Graphics();
-        this.root.addChild(entity.disc);
+        this.renderingSystem.root.addChild(entity.disc);
     }
 
     exit(entity) {
-        this.root.removeChild(entity.disc);
+        this.renderingSystem.root.removeChild(entity.disc);
         delete entity.disc;
     }
 

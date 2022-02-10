@@ -1,5 +1,6 @@
 import ECS from 'tnt-ecs';
-import { settings, SCALE_MODES, Application, Container } from 'pixi.js';
+import * as PIXI from 'pixi.js';
+import { Layer, Group, Stage } from '@pixi/layers';
 import Messages from "../core/messages";
 
 export default class RenderingSystem extends ECS.System {
@@ -12,10 +13,10 @@ export default class RenderingSystem extends ECS.System {
         this.width = window.innerWidth;
         this.height = window.innerHeight;
 
-        settings.SCALE_MODE = SCALE_MODES.NEAREST;
+        PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
         // create app
-        this.app = new Application({
+        this.app = new PIXI.Application({
             width: this.width,
             height: this.height,
             antialias: false,
@@ -23,13 +24,20 @@ export default class RenderingSystem extends ECS.System {
             roundPixels: true
         });
         
-        // install root container
-        this.root = new Container();
-        this.app.stage.addChild(this.root);
+        this.app.stage = new Stage();
         
-        this.active = new Container();
-        this.app.stage.addChild(this.active);
-
+        // install base container
+        this.root = this.app.stage.addChild(new PIXI.Container());
+        
+        this.backgroundGroup = new Group(1);
+        this.activeGroup = new Group(2, true);
+        this.activeGroup.on('sort', (sprite) => {
+            sprite.zOrder = sprite.y;
+        });
+        
+        this.app.stage.addChild(new Layer(this.backgroundGroup));
+        this.app.stage.addChild(new Layer(this.activeGroup));
+        
         // add canvas to HTML document
         this.app.view.style.width = '100%';
         document.body.appendChild(this.app.view);

@@ -1,24 +1,25 @@
 import ECS from 'tnt-ecs';
-import {Graphics, Sprite, Texture} from 'pixi.js';
+import * as PIXI from 'pixi.js';
 
 export default class SpriteRenderingSystem extends ECS.System {
     
-    constructor(root) {
+    constructor(renderingSystem) {
         super();
-        this.root = root;
+        this.renderingSystem = renderingSystem;
     }
     
     test(entity) {
         return (entity.components.position && entity.components.sprite);
     }
-
+    
     enter(entity) {
-        entity.sprite = new Sprite(Texture.from(entity.components.sprite.src));
-        this.root.addChild(entity.sprite);
+        entity.sprite = new PIXI.Sprite(PIXI.Texture.from(entity.components.sprite.src));
+        entity.sprite.parentGroup = this.renderingSystem.activeGroup;
+        this.renderingSystem.root.addChild(entity.sprite);
     }
 
     exit(entity) {
-        this.root.removeChild(entity.sprite);
+        this.renderingSystem.root.removeChild(entity.sprite);
         delete entity.sprite;
     }
 

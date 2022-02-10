@@ -6,18 +6,18 @@ import WorldTime from "../world/world-time";
 
 export default class TimeSystem extends ECS.System {
 
-    constructor(root, frequency= 15) {
+    constructor(renderingSystem, frequency= 15) {
 
         super(frequency);
 
-        this.root = root;
+        this.renderingSystem = renderingSystem;
 
         this.worldTime = new WorldTime(8, 100);
 
         this.timeAmbientColorFilter = new Ambient();
         this.dayAmbientColorFilter = new Ambient();
 
-        this.root.filters = [this.timeAmbientColorFilter, this.dayAmbientColorFilter];
+        this.renderingSystem.root.filters = [this.timeAmbientColorFilter, this.dayAmbientColorFilter];
     }
 
     test(entity) {

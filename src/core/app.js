@@ -52,35 +52,26 @@ export default class App {
         let renderingSystem = new RenderingSystem();
         this.ecs.addSystem(renderingSystem);
         this.ecs.addSystem(new CameraSystem(renderingSystem));
-        this.ecs.addSystem(new TimeSystem(renderingSystem.root));
-        this.ecs.addSystem(new DiscRenderingSystem(renderingSystem.root));
-        this.ecs.addSystem(new AnimationRenderingSystem(renderingSystem.root));
-        this.ecs.addSystem(new SpriteRenderingSystem(renderingSystem.root));
-        this.ecs.addSystem(new TextRenderingSystem(renderingSystem.root));
-        this.ecs.addSystem(new LineRenderingSystem(renderingSystem.root));
-
-        for (let i = 0; i < 20; i++) {
+        this.ecs.addSystem(new TimeSystem(renderingSystem));
+        this.ecs.addSystem(new DiscRenderingSystem(renderingSystem));
+        this.ecs.addSystem(new AnimationRenderingSystem(renderingSystem));
+        this.ecs.addSystem(new SpriteRenderingSystem(renderingSystem));
+        this.ecs.addSystem(new TextRenderingSystem(renderingSystem));
+        this.ecs.addSystem(new LineRenderingSystem(renderingSystem));
+        
+        for (let i = 0; i < 200; i++) {
             this.ecs.addEntity(new ECS.Entity([
-                new Sprite({
-                    src: './assets/tiles.png',
-                    scaleX: 1,
-                    scaleY: 1
-                }),
+                new Sprite({src: './assets/house-1.png'}),
                 new Position({
                     x: math.randBetweenPosNeg(-2000, 2000),
                     y: math.randBetweenPosNeg(-2000, 2000)
                 })
             ]));
         }
-        
+
         for (let i = 0; i < 200; i++) {
             this.ecs.addEntity(new ECS.Entity([
-                new Disc(),
-                new Sprite({
-                    src: './assets/house-1.png',
-                    scaleX: 1,
-                    scaleY: 1
-                }),
+                new Sprite({src: './assets/pilar.png'}),
                 new Position({
                     x: math.randBetweenPosNeg(-2000, 2000),
                     y: math.randBetweenPosNeg(-2000, 2000)
@@ -100,7 +91,7 @@ export default class App {
         this.ecs.addEntity(camera);
         
         let npcs = [];
-        for (let i = 0; i < 200; i++) {
+        for (let i = 0; i < 20; i++) {
             let npc = new ECS.Entity([
                 new AnimatedSprite(),
                 new Position({
@@ -123,6 +114,7 @@ export default class App {
             });
         }, 3000);
 
+        /*
         let randNpc;
         setInterval(() => {
             if (! randNpc) {
@@ -135,7 +127,7 @@ export default class App {
                 camera.addComponent(new Camera());
             }
 
-        }, 5000);
+        }, 5000);*/
     }
     
     start() {

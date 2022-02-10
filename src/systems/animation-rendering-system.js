@@ -3,9 +3,9 @@ import * as PIXI from 'pixi.js';
 
 export default class AnimationRenderingSystem extends ECS.System {
 
-    constructor(root) {
+    constructor(renderingSystem) {
         super();
-        this.root = root;
+        this.renderingSystem = renderingSystem;
     }
 
     test(entity) {
@@ -22,15 +22,18 @@ export default class AnimationRenderingSystem extends ECS.System {
             .load(() => {
 
                 entity.spritesheet = loader.resources[animatedSprite.src].spritesheet;
+                
                 entity.animatedSprite = new PIXI.AnimatedSprite(entity.spritesheet.animations[animatedSprite.animation]);
                 entity.animatedSprite.animationSpeed = animatedSprite.speed;
                 entity.animatedSprite.play();
-                this.root.addChild(entity.animatedSprite);
+                
+                entity.animatedSprite.parentGroup = this.renderingSystem.activeGroup;
+                this.renderingSystem.root.addChild(entity.animatedSprite);
             });
     }
 
     exit(entity) {
-        this.root.removeChild(entity.animatedSprite);
+        this.renderingSystem.app.stage.removeChild(entity.animatedSprite);
         delete entity.animatedSprite;
     }
 

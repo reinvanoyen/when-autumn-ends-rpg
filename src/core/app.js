@@ -2,6 +2,7 @@ import ECS from 'tnt-ecs';
 import { Ticker } from 'pixi.js'
 import Messages from "./messages";
 import * as PIXI from 'pixi.js';
+const Vector2 = require('gl-matrix').vec2;
 
 // Systems
 import DiscRenderingSystem from "../systems/disc-rendering-system";
@@ -29,107 +30,85 @@ import WalkingBehaviorSystem from "../systems/walking-behavior-system";
 import AccelerationSystem from "../systems/acceleration-system";
 import AnimationRenderingSystem from "../systems/animation-rendering-system";
 import AnimatedSprite from "../components/animated-sprite";
+import Debug from "../components/debug";
+import CollisionBox from "../components/collision-box";
+import DebugSystem from "../systems/debug-system";
+import CollisionDetectionSystem from "../systems/collision-detection-system";
+import SpatialAwareness from "../components/spatial-awareness";
+import SpatialHashingSystem from "../systems/spatial-hashing-system";
+import CollisionPositionSystem from "../systems/collision-position-system";
+import CollisionReactionSystem from "../systems/collision-reaction-system";
+import CollisionReaction from "../components/collision-reaction";
+import Tilemap from "../components/tilemap";
+import TilemapSystem from "../systems/tilemap-system";
+import WorldChunkSystem from "../systems/world-chunk-system";
+
+// Assemblages
+import player from "../assemblage/player";
+import npc from "../assemblage/npc";
+import ProjectileWeaponSystem from "../systems/projectile-weapon-system";
+import CollisionExplosionSystem from "../systems/collision-explosion-system";
+import ExplosionSystem from "../systems/explosion-system";
+import CollisionExplosion from "../components/collision-explosion";
 
 export default class App {
 
     constructor() {
         // init ECS Core
         this.ecs = new ECS.Core();
-        
+
         // install ticker
         this.ticker = new Ticker();
         this.ticker.stop();
     }
-    
+
     bind() {
         // Logic
-        this.ecs.addSystem(new AccelerationSystem());
         this.ecs.addSystem(new ControllerSystem());
         this.ecs.addSystem(new WalkingBehaviorSystem());
+        this.ecs.addSystem(new AccelerationSystem());
         this.ecs.addSystem(new MovementSystem());
-        
+        this.ecs.addSystem(new TilemapSystem());
+
         // Rendering
         let renderingSystem = new RenderingSystem();
         this.ecs.addSystem(renderingSystem);
         this.ecs.addSystem(new CameraSystem(renderingSystem));
-        this.ecs.addSystem(new TimeSystem(renderingSystem));
         this.ecs.addSystem(new DiscRenderingSystem(renderingSystem));
         this.ecs.addSystem(new AnimationRenderingSystem(renderingSystem));
         this.ecs.addSystem(new SpriteRenderingSystem(renderingSystem));
         this.ecs.addSystem(new TextRenderingSystem(renderingSystem));
         this.ecs.addSystem(new LineRenderingSystem(renderingSystem));
-        
-        for (let i = 0; i < 200; i++) {
-            this.ecs.addEntity(new ECS.Entity([
-                new Sprite({src: './assets/house-1.png'}),
-                new Position({
-                    x: math.randBetweenPosNeg(-2000, 2000),
-                    y: math.randBetweenPosNeg(-2000, 2000)
-                })
-            ]));
-        }
+        this.ecs.addSystem(new TimeSystem(renderingSystem));
+        this.ecs.addSystem(new DebugSystem(renderingSystem));
+        this.ecs.addSystem(new ExplosionSystem(renderingSystem));
 
-        for (let i = 0; i < 200; i++) {
-            this.ecs.addEntity(new ECS.Entity([
-                new Sprite({src: './assets/pilar.png'}),
-                new Position({
-                    x: math.randBetweenPosNeg(-2000, 2000),
-                    y: math.randBetweenPosNeg(-2000, 2000)
-                })
-            ]));
-        }
+        let spatialHashingSystem = new SpatialHashingSystem();
+        this.ecs.addSystem(spatialHashingSystem);
+        this.ecs.addSystem(new CollisionDetectionSystem(spatialHashingSystem));
+        this.ecs.addSystem(new CollisionPositionSystem());
+        this.ecs.addSystem(new CollisionReactionSystem());
+        this.ecs.addSystem(new WorldChunkSystem());
+        this.ecs.addSystem(new ProjectileWeaponSystem());
+        this.ecs.addSystem(new CollisionExplosionSystem());
 
-        let camera = new ECS.Entity([
-            new AnimatedSprite(),
-            new Camera(),
-            new Position(),
-            new Velocity(),
-            new CharacterController(),
-            new WalkingBehavior()
-        ]);
-        
-        this.ecs.addEntity(camera);
-        
-        let npcs = [];
-        for (let i = 0; i < 20; i++) {
-            let npc = new ECS.Entity([
-                new AnimatedSprite(),
-                new Position({
-                    x: math.randBetweenPosNeg(-5000, 5000),
-                    y: math.randBetweenPosNeg(-5000, 5000)
-                }),
-                new Velocity(),
-                new WalkingBehavior({
-                    isWalking: true,
-                    x: (Math.round(Math.random()) === 0 ? -1 : 1)
-                })
-            ]);
-            npcs.push(npc);
-            this.ecs.addEntity(npc);
-        }
-        
-        setInterval(() => {
-            npcs.forEach(npc => {
-                npc.components.walkingBehavior.x = (npc.components.walkingBehavior.x > 0 ? -1 : 1);
-            });
-        }, 3000);
+        let playerEntity = player();
+        this.ecs.addEntity(playerEntity);
 
-        /*
-        let randNpc;
-        setInterval(() => {
-            if (! randNpc) {
-                randNpc = npcs[Math.floor(Math.random()*npcs.length)];
-                camera.removeComponent('camera');
-                randNpc.addComponent(new Camera());
-            } else {
-                randNpc.removeComponent('camera');
-                randNpc = null;
-                camera.addComponent(new Camera());
+        let debug = false;
+        document.addEventListener('keypress', e => {
+            if (e.code === 'KeyD') {
+                if (debug) {
+                    this.ecs.entities.forEach(e => e.removeComponent('debug'));
+                    debug = ! debug;
+                } else {
+                    this.ecs.entities.forEach(e => e.addComponent(new Debug()));
+                    debug = ! debug;
+                }
             }
-
-        }, 5000);*/
+        })
     }
-    
+
     start() {
         this.ticker.add(deltaTime => {
             Messages.process();

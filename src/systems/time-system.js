@@ -12,12 +12,12 @@ export default class TimeSystem extends ECS.System {
 
         this.renderingSystem = renderingSystem;
 
-        this.worldTime = new WorldTime(8, 100);
+        this.worldTime = new WorldTime(10, 1);
 
         this.timeAmbientColorFilter = new Ambient();
         this.dayAmbientColorFilter = new Ambient();
 
-        this.renderingSystem.root.filters = [this.timeAmbientColorFilter, this.dayAmbientColorFilter];
+        this.renderingSystem.app.stage.filters = [this.timeAmbientColorFilter, this.dayAmbientColorFilter];
     }
 
     test(entity) {
@@ -25,9 +25,9 @@ export default class TimeSystem extends ECS.System {
     }
 
     postUpdate() {
-        
+
         this.worldTime.tick();
-        
+
         this.timeAmbientColorFilter.ambientColor = this.worldTime.getTimeAmbientColor();
         this.dayAmbientColorFilter.ambientColor = this.worldTime.getDayAmbientColor();
     }

@@ -29,14 +29,16 @@ export default class RenderingSystem extends ECS.System {
         // install base container
         this.root = this.app.stage.addChild(new PIXI.Container());
         
-        this.backgroundGroup = new Group(1);
+        this.backGroup = new Group(1);
         this.activeGroup = new Group(2, true);
         this.activeGroup.on('sort', (sprite) => {
             sprite.zOrder = sprite.y;
         });
+        this.frontGroup = new Group(3);
         
-        this.app.stage.addChild(new Layer(this.backgroundGroup));
+        this.app.stage.addChild(new Layer(this.backGroup));
         this.app.stage.addChild(new Layer(this.activeGroup));
+        this.app.stage.addChild(new Layer(this.frontGroup));
         
         // add canvas to HTML document
         this.app.view.style.width = '100%';

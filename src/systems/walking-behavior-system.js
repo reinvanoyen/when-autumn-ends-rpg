@@ -14,30 +14,28 @@ export default class WalkingBehaviorSystem extends ECS.System {
     }
 
     update(entity) {
-        
+
         let { walkingBehavior, velocity } = entity.components;
-        
+
         if (entity.components.animatedSprite) {
             entity.components.animatedSprite.animation = (walkingBehavior.isWalking ? 'walk' : 'idle');
-            entity.components.animatedSprite.speed = (walkingBehavior.isWalking ? .2 : .05);
+            entity.components.animatedSprite.speed = (walkingBehavior.isWalking ? .1 : .05);
             entity.components.animatedSprite.scaleX = 1;
-            if (walkingBehavior.x < 0) {
-                entity.components.animatedSprite.scaleX = -1;
-            }
         }
-        
+
         if (velocity) {
-            
+
             if (walkingBehavior.isWalking) {
-                
+
                 let forceVec2 = Vector2.fromValues(velocity.forceX, velocity.forceY);
-                
+
                 Vector2.add(forceVec2, forceVec2, Vector2.fromValues(walkingBehavior.x, walkingBehavior.y));
-                
-                velocity.x = forceVec2[0];
-                velocity.y = forceVec2[1];
-                
+
+                velocity.x = forceVec2[0] * 3;
+                velocity.y = forceVec2[1] * 3;
+
                 if (walkingBehavior.x === 0) {
+
                     let lerpedVelocity = Vector2.fromValues(velocity.x, velocity.y);
                     Vector2.lerp(lerpedVelocity, lerpedVelocity, Vector2.fromValues(0, 0), .5);
                     velocity.forceX = 0;
@@ -45,20 +43,21 @@ export default class WalkingBehaviorSystem extends ECS.System {
                 }
 
                 if (walkingBehavior.y === 0) {
+
                     let lerpedVelocity = Vector2.fromValues(velocity.x, velocity.y);
                     Vector2.lerp(lerpedVelocity, lerpedVelocity, Vector2.fromValues(0, 0), .5);
                     velocity.forceY = 0;
                     velocity.y = lerpedVelocity[1];
                 }
-                
+
             } else {
-                
+
                 let lerpedVelocity = Vector2.fromValues(velocity.x, velocity.y);
                 Vector2.lerp(lerpedVelocity, lerpedVelocity, Vector2.fromValues(0, 0), .5);
-                
+
                 velocity.forceX = 0;
                 velocity.forceY = 0;
-                
+
                 velocity.x = lerpedVelocity[0];
                 velocity.y = lerpedVelocity[1];
             }

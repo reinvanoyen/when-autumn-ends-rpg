@@ -6,7 +6,7 @@ export default class ControllerSystem extends ECS.System {
         super();
 
         window.addEventListener('keyup', e => {
-            
+
             this.entities.forEach(entity => {
                 if (e.code === 'ArrowUp') {
                     entity.components.controller.keyUp = false;
@@ -24,9 +24,9 @@ export default class ControllerSystem extends ECS.System {
                     entity.components.controller.keySpace = false
                 }
             });
-            
+
         }, false);
-        
+
         window.addEventListener('keydown', e => {
             this.entities.forEach(entity => {
                 if (e.code === 'ArrowUp') {
@@ -51,15 +51,15 @@ export default class ControllerSystem extends ECS.System {
     test(entity) {
         return (entity.components.controller);
     }
-    
+
     update(entity) {
-        
+
         let { controller, walkingBehavior, camera } = entity.components;
-        
+
         walkingBehavior.isWalking = false;
         walkingBehavior.y = 0;
         walkingBehavior.x = 0;
-        
+
         if (walkingBehavior) {
             if (controller.keyUp) {
                 walkingBehavior.isWalking = true;
@@ -76,13 +76,6 @@ export default class ControllerSystem extends ECS.System {
             if (controller.keyLeft) {
                 walkingBehavior.isWalking = true;
                 walkingBehavior.x = -1;
-            }
-        }
-        
-        if (camera && controller.keySpace) {
-            camera.zoom += .1;
-            if (camera.zoom > 10) {
-                camera.zoom = .5;
             }
         }
     }

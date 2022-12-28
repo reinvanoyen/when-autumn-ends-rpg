@@ -3,7 +3,7 @@
 import * as PIXI from 'pixi.js';
 
 export default class Ambient extends PIXI.Filter {
-
+    
     constructor() {
         super(
             // vertex shader

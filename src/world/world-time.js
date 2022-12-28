@@ -41,8 +41,8 @@ export default class WorldTime {
 
     tick() {
 
-        this.timestamp += 0.01;
-        this.time += 0.01;
+        this.timestamp += .01;
+        this.time += .01;
 
         if( this.time > 24 ) {
             this.time = 0;

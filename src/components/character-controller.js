@@ -7,14 +7,16 @@ export default class CharacterController extends ECS.Component {
     getName() {
         return 'controller';
     }
-    
+
     getDefaults() {
         return {
             keyUp: false,
             keyRight: false,
             keyDown: false,
             keyLeft: false,
-            keySpace: false
+            keySpace: false,
+            mouseX: null,
+            mouseY: null
         }
     }
 }

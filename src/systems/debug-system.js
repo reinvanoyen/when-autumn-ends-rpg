@@ -1,5 +1,6 @@
 import ECS from 'tnt-ecs';
 import {Graphics} from "pixi.js";
+import Text from "../components/text";
 
 export default class DebugSystem extends ECS.System {
 
@@ -7,35 +8,35 @@ export default class DebugSystem extends ECS.System {
         super();
         this.renderingSystem = renderingSystem;
     }
-    
+
     test(entity) {
         return (entity.components.debug);
     }
 
     enter(entity) {
-        
+
         let { collisionBox, position} = entity.components;
-        
+
         if (collisionBox && position) {
             entity.debugCollisionBox = new Graphics();
             entity.debugCollisionBox.parentGroup = this.renderingSystem.frontGroup;
             this.renderingSystem.root.addChild(entity.debugCollisionBox);
         }
     }
-    
+
     exit(entity) {
         if (entity.debugCollisionBox) {
             this.renderingSystem.root.removeChild(entity.debugCollisionBox);
             delete entity.debugCollisionBox;
         }
     }
-    
+
     update(entity) {
-        
+
         if (entity.debugCollisionBox) {
-            
-            let { collisionBox } = entity.components;
-            
+
+            let { collisionBox, health } = entity.components;
+
             if (collisionBox) {
                 entity.debugCollisionBox.alpha = 1;
                 entity.debugCollisionBox.clear();
@@ -47,6 +48,15 @@ export default class DebugSystem extends ECS.System {
                     collisionBox.bottomLeft[0], collisionBox.bottomLeft[1]
                 ]);
                 entity.debugCollisionBox.endFill();
+            }
+
+            if (health) {
+                entity.addComponent(new Text({
+                    string: 'HP: '+health.amount,
+                    size: 10,
+                    offsetY: 0,
+                    offsetX: -20
+                }));
             }
         }
     }

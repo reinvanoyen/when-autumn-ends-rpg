@@ -10,7 +10,8 @@ export default class CollisionExplosion extends ECS.Component {
 
     getDefaults() {
         return {
-            radius: 100
+            radius: 100,
+            damage: 0
         };
     }
 }

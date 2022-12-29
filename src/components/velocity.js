@@ -12,7 +12,7 @@ export default class Velocity extends ECS.Component {
         return {
             x: 0,
             y: 0,
-            max: 3,
+            max: 20,
             forceX: 0,
             forceY: 0,
             mass: .2,

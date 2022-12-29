@@ -12,7 +12,9 @@ export default class Text extends ECS.Component {
         return {
             string: '',
             color: 0xffffff,
-            size: 20
+            size: 20,
+            offsetX: 0,
+            offsetY: 0
         };
     }
 }

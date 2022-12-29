@@ -3,7 +3,13 @@ import CollisionBox from "../components/collision-box";
 import Position from "../components/position";
 import SpatialAwareness from "../components/spatial-awareness";
 import Sprite from "../components/sprite";
-import CollisionExplosion from "../components/collision-explosion";
+import Health from "../components/health";
+import Disc from "../components/disc";
+import Pickup from "../components/pickup";
+import ProjectileWeapon from "../components/projectile-weapon";
+import * as util from "util";
+import math from "../util/math";
+import weaponPickup from "../assemblage/weapon-pickup";
 const Vector2 = require('gl-matrix').vec2;
 
 export default class TilemapSystem extends ECS.System {
@@ -32,16 +38,19 @@ export default class TilemapSystem extends ECS.System {
                     case 1:
                         // The tile
                         let tile = new ECS.Entity([
+                            new Health({
+                                amount: 1000
+                            }),
                             new Sprite({
                                 src: './assets/block.png',
                                 anchorX: 0,
                                 anchorY: 0
                             }),
-                            new SpatialAwareness(),
                             new Position({
                                 x: tileX,
                                 y: tileY
                             }),
+                            new SpatialAwareness(),
                             new CollisionBox({
                                 active: false,
                                 anchor: Vector2.fromValues(0, 0),
@@ -55,27 +64,28 @@ export default class TilemapSystem extends ECS.System {
                     case 2:
                         // The tile
                         let grassTile = new ECS.Entity([
+                            new Health(),
                             new Sprite({
                                 src: './assets/grass.png',
                                 anchorX: 0,
                                 anchorY: 0
                             }),
-                            new SpatialAwareness(),
                             new Position({
                                 x: tileX,
                                 y: tileY
                             }),
+                            new SpatialAwareness(),
                             new CollisionBox({
                                 anchor: Vector2.fromValues(0, 0),
                                 width: this.tileSize,
                                 height: this.tileSize
-                            }),
-                            new CollisionExplosion({
-                                radius: 75
                             })
                         ]);
                         entity.tileEntities.push(grassTile);
                         this.core.addEntity(grassTile);
+                        break;
+                    case 3:
+                        this.core.addEntity(weaponPickup(tileX, tileY));
                         break;
                     default:
                         break;

@@ -50,6 +50,12 @@ import ProjectileWeaponSystem from "../systems/projectile-weapon-system";
 import CollisionExplosionSystem from "../systems/collision-explosion-system";
 import ExplosionSystem from "../systems/explosion-system";
 import CollisionExplosion from "../components/collision-explosion";
+import DamageSystem from "../systems/damage-system";
+import HealthSystem from "../systems/health-system";
+import Pickup from "../components/pickup";
+import PickupSystem from "../systems/pickup-system";
+import ProjectileWeapon from "../components/projectile-weapon";
+import LifetimeSystem from "../systems/lifetime-system";
 
 export default class App {
 
@@ -64,7 +70,6 @@ export default class App {
 
     bind() {
         // Logic
-        this.ecs.addSystem(new ControllerSystem());
         this.ecs.addSystem(new WalkingBehaviorSystem());
         this.ecs.addSystem(new AccelerationSystem());
         this.ecs.addSystem(new MovementSystem());
@@ -91,13 +96,17 @@ export default class App {
         this.ecs.addSystem(new WorldChunkSystem());
         this.ecs.addSystem(new ProjectileWeaponSystem());
         this.ecs.addSystem(new CollisionExplosionSystem());
+        this.ecs.addSystem(new DamageSystem());
+        this.ecs.addSystem(new HealthSystem());
+        this.ecs.addSystem(new PickupSystem());
+        this.ecs.addSystem(new LifetimeSystem());
+        this.ecs.addSystem(new ControllerSystem());
 
-        let playerEntity = player();
-        this.ecs.addEntity(playerEntity);
+        this.ecs.addEntity(player());
 
         let debug = false;
         document.addEventListener('keypress', e => {
-            if (e.code === 'KeyD') {
+            if (e.code === 'KeyE') {
                 if (debug) {
                     this.ecs.entities.forEach(e => e.removeComponent('debug'));
                     debug = ! debug;

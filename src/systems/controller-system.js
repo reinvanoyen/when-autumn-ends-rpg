@@ -1,23 +1,55 @@
 import ECS from 'tnt-ecs';
+import Messages from "../core/messages";
 
 export default class ControllerSystem extends ECS.System {
 
     constructor() {
         super();
 
-        window.addEventListener('keyup', e => {
+        this.camera = {
+            x: 0,
+            y: 0,
+            offsetX: 0,
+            offsetY: 0,
+            zoom: 1
+        };
 
+        this.mouseMoveEvent = null;
+
+        Messages.addListener('camera', e => {
+            this.camera = e;
+        });
+
+        window.addEventListener('mousedown', e => {
             this.entities.forEach(entity => {
-                if (e.code === 'ArrowUp') {
+                entity.components.controller.mouseDown = true;
+                entity.components.controller.mouseDown = true;
+            });
+        });
+
+        window.addEventListener('mouseup', e => {
+            this.entities.forEach(entity => {
+                entity.components.controller.mouseDown = false;
+                entity.components.controller.mouseDown = false;
+            });
+        });
+
+        window.addEventListener('mousemove', e => {
+            this.mouseMoveEvent = e;
+        });
+
+        window.addEventListener('keyup', e => {
+            this.entities.forEach(entity => {
+                if (e.code === 'ArrowUp' || e.code === 'KeyW') {
                     entity.components.controller.keyUp = false;
                 }
-                if (e.code === 'ArrowDown') {
+                if (e.code === 'ArrowDown' || e.code === 'KeyS') {
                     entity.components.controller.keyDown = false;
                 }
-                if (e.code === 'ArrowLeft') {
+                if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
                     entity.components.controller.keyLeft = false;
                 }
-                if (e.code === 'ArrowRight') {
+                if (e.code === 'ArrowRight' || e.code === 'KeyD') {
                     entity.components.controller.keyRight = false
                 }
                 if (e.code === 'Space') {
@@ -29,16 +61,16 @@ export default class ControllerSystem extends ECS.System {
 
         window.addEventListener('keydown', e => {
             this.entities.forEach(entity => {
-                if (e.code === 'ArrowUp') {
+                if (e.code === 'ArrowUp' || e.code === 'KeyW') {
                     entity.components.controller.keyUp = true;
                 }
-                if (e.code === 'ArrowDown') {
+                if (e.code === 'ArrowDown' || e.code === 'KeyS') {
                     entity.components.controller.keyDown = true;
                 }
-                if (e.code === 'ArrowLeft') {
+                if (e.code === 'ArrowLeft' || e.code === 'KeyA') {
                     entity.components.controller.keyLeft = true;
                 }
-                if (e.code === 'ArrowRight') {
+                if (e.code === 'ArrowRight' || e.code === 'KeyD') {
                     entity.components.controller.keyRight = true
                 }
                 if (e.code === 'Space') {
@@ -48,13 +80,28 @@ export default class ControllerSystem extends ECS.System {
         }, false);
     }
 
+    transformDomEvent(e) {
+        return {
+            localX: e.clientX,
+            localY: e.clientY,
+            worldX: (e.clientX - this.camera.x) / this.camera.zoom,
+            worldY: (e.clientY - this.camera.y) / this.camera.zoom
+        };
+    }
+
     test(entity) {
         return (entity.components.controller);
     }
 
     update(entity) {
 
-        let { controller, walkingBehavior, camera } = entity.components;
+        let { controller, walkingBehavior } = entity.components;
+
+        if (this.mouseMoveEvent) {
+            let transformedMouseMoveEvent = this.transformDomEvent(this.mouseMoveEvent);
+            controller.mouseX = transformedMouseMoveEvent.worldX;
+            controller.mouseY = transformedMouseMoveEvent.worldY;
+        }
 
         walkingBehavior.isWalking = false;
         walkingBehavior.y = 0;

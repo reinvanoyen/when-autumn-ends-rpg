@@ -15,9 +15,10 @@ export default class Velocity extends ECS.Component {
             max: 20,
             forceX: 0,
             forceY: 0,
-            mass: .2,
+            mass: 1,
             accelerationX: 0,
-            accelerationY: 0
+            accelerationY: 0,
+            slowingRadius: 20
         };
     }
 }

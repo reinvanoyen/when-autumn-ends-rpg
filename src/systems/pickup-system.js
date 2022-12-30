@@ -22,16 +22,21 @@ export default class PickupSystem extends ECS.System {
 
             collisionBox.collidingEntities.forEach(entityId => {
 
-                let entity = this.core.findEntityById(entityId);
+                let collidingEntity = this.core.findEntityById(entityId);
 
-                if (entity) {
+                if (
+                    collidingEntity &&
+                    collidingEntity.components.tag &&
+                    collidingEntity.components.tag.string === 'player'
+                ) {
                     pickup.add.forEach(component => {
-                        entity.addComponent(component);
+                        collidingEntity.addComponent(component);
                     });
+
+                    this.core.removeEntity(entity);
                 }
             });
 
-            this.core.removeEntity(entity);
         }
     }
 }

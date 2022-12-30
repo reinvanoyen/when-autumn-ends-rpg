@@ -7,10 +7,12 @@ import CollisionBox from "../components/collision-box";
 import ProjectileWeapon from "../components/projectile-weapon";
 import Sprite from "../components/sprite";
 import Pickup from "../components/pickup";
+import Tag from "../components/tag";
 const Vector2 = require('gl-matrix').vec2;
 
 export default function shotgun(x, y) {
     return new ECS.Entity([
+        new Tag({string: 'pickup'}),
         new Sprite({
             anchorX: .5,
             anchorY: .5,
@@ -36,7 +38,7 @@ export default function shotgun(x, y) {
                     size: 5,
                     color: 0x9b0000,
                     cooldown: 50,
-                    damage: 5,
+                    damage: 20,
                     projectileAmount: 5
                 })
             ]

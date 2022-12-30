@@ -33,7 +33,10 @@ export default class CollisionExplosionSystem extends ECS.System {
                 if (
                     collidingEntity &&
                     collidingEntity.components.tag &&
-                    collidingEntity.components.tag.string === 'bullet'
+                    (
+                        collidingEntity.components.tag.string === 'bullet' ||
+                        collidingEntity.components.tag.string === 'pickup'
+                    )
                 ) {
 
                     // do nothing, it's another bullet

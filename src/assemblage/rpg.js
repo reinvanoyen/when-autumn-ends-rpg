@@ -7,10 +7,12 @@ import CollisionBox from "../components/collision-box";
 import ProjectileWeapon from "../components/projectile-weapon";
 import Sprite from "../components/sprite";
 import Pickup from "../components/pickup";
+import Tag from "../components/tag";
 const Vector2 = require('gl-matrix').vec2;
 
 export default function rpg(x, y) {
     return new ECS.Entity([
+        new Tag({string: 'pickup'}),
         new Sprite({
             anchorX: .5,
             anchorY: .5,

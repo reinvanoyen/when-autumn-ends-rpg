@@ -56,6 +56,9 @@ import Pickup from "../components/pickup";
 import PickupSystem from "../systems/pickup-system";
 import ProjectileWeapon from "../components/projectile-weapon";
 import LifetimeSystem from "../systems/lifetime-system";
+import enemy from "../assemblage/enemy";
+import TargetMovementSystem from "../systems/target-movement-system";
+import FollowSystem from "../systems/follow-system";
 
 export default class App {
 
@@ -71,7 +74,8 @@ export default class App {
     bind() {
         // Logic
         this.ecs.addSystem(new WalkingBehaviorSystem());
-        this.ecs.addSystem(new AccelerationSystem());
+        this.ecs.addSystem(new TargetMovementSystem());
+        //this.ecs.addSystem(new AccelerationSystem());
         this.ecs.addSystem(new MovementSystem());
         this.ecs.addSystem(new TilemapSystem());
 
@@ -93,16 +97,22 @@ export default class App {
         this.ecs.addSystem(new CollisionDetectionSystem(spatialHashingSystem));
         this.ecs.addSystem(new CollisionPositionSystem());
         this.ecs.addSystem(new CollisionReactionSystem());
+        this.ecs.addSystem(new CollisionExplosionSystem());
         this.ecs.addSystem(new WorldChunkSystem());
         this.ecs.addSystem(new ProjectileWeaponSystem());
-        this.ecs.addSystem(new CollisionExplosionSystem());
         this.ecs.addSystem(new DamageSystem());
-        this.ecs.addSystem(new HealthSystem());
         this.ecs.addSystem(new PickupSystem());
         this.ecs.addSystem(new LifetimeSystem());
         this.ecs.addSystem(new ControllerSystem());
+        this.ecs.addSystem(new FollowSystem());
+        this.ecs.addSystem(new HealthSystem());
 
-        this.ecs.addEntity(player());
+        let playerEntity = player();
+        this.ecs.addEntity(playerEntity);
+
+        for (let i = 0; i < 200; i++) {
+            this.ecs.addEntity(enemy(playerEntity.getId()));
+        }
 
         let debug = false;
         document.addEventListener('keypress', e => {

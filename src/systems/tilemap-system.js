@@ -10,6 +10,7 @@ import ProjectileWeapon from "../components/projectile-weapon";
 import * as util from "util";
 import math from "../util/math";
 import weaponPickup from "../assemblage/weapon-pickup";
+import enemy from "../assemblage/enemy";
 const Vector2 = require('gl-matrix').vec2;
 
 export default class TilemapSystem extends ECS.System {

@@ -7,10 +7,12 @@ import CollisionBox from "../components/collision-box";
 import ProjectileWeapon from "../components/projectile-weapon";
 import Sprite from "../components/sprite";
 import Pickup from "../components/pickup";
+import Tag from "../components/tag";
 const Vector2 = require('gl-matrix').vec2;
 
 export default function assaultRifle(x, y) {
     return new ECS.Entity([
+        new Tag({string: 'pickup'}),
         new Sprite({
             anchorX: .5,
             anchorY: .5,
@@ -33,7 +35,7 @@ export default function assaultRifle(x, y) {
                     size: 3,
                     color: 0x000000,
                     cooldown: 8,
-                    damage: 8
+                    damage: 50
                 })
             ]
         })

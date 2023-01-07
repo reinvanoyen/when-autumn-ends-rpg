@@ -11,7 +11,8 @@ export default class Disc extends ECS.Component {
     getDefaults() {
         return {
             radius: 3,
-            color: 0xFFFFFF
+            color: 0xFFFFFF,
+            group: 'activeGroup'
         };
     }
 }

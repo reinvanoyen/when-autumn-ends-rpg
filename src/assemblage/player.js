@@ -14,13 +14,13 @@ import Health from "../components/health";
 import Tag from "../components/tag";
 const Vector2 = require('gl-matrix').vec2;
 
-export default function player() {
+export default function player(x, y) {
     return new ECS.Entity([
         new Tag({string: 'player'}),
         new Disc({radius: 10}),
         new Health(),
         new SpatialAwareness(),
-        new Position(),
+        new Position({x, y}),
         new Velocity(),
         new CollisionReaction(),
         new CollisionBox({

@@ -14,9 +14,11 @@ export default class ExplosionSystem extends ECS.System {
 
     enter(entity) {
         entity.explosion = new Graphics();
+        entity.explosion.parentGroup = this.renderingSystem.activeGroup;
         entity.explosion.alpha = .2;
         entity.explosion2 = new Graphics();
-        entity.explosion2.alpha = 1;
+        entity.explosion2.parentGroup = this.renderingSystem.activeGroup;
+        entity.explosion2.alpha = .5;
         this.renderingSystem.root.addChild(entity.explosion);
         this.renderingSystem.root.addChild(entity.explosion2);
     }

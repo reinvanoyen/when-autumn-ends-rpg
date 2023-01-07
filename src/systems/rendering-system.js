@@ -20,7 +20,7 @@ export default class RenderingSystem extends ECS.System {
             width: this.width,
             height: this.height,
             antialias: false,
-            backgroundColor: 0x6c7e57,
+            backgroundColor: 0x286196,
             roundPixels: true
         });
 
@@ -29,12 +29,9 @@ export default class RenderingSystem extends ECS.System {
         // install base container
         this.root = this.app.stage.addChild(new PIXI.Container());
 
-        this.backGroup = new Group(1);
-        this.activeGroup = new Group(2, true);
-        this.activeGroup.on('sort', (sprite) => {
-            sprite.zOrder = sprite.y;
-        });
-        this.frontGroup = new Group(3);
+        this.backGroup = new Group(0);
+        this.activeGroup = new Group(1);
+        this.frontGroup = new Group(2);
 
         this.app.stage.addChild(new Layer(this.backGroup));
         this.app.stage.addChild(new Layer(this.activeGroup));

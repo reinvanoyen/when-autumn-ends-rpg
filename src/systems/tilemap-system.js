@@ -1,16 +1,11 @@
 import ECS from 'tnt-ecs';
-import CollisionBox from "../components/collision-box";
 import Position from "../components/position";
-import SpatialAwareness from "../components/spatial-awareness";
 import Sprite from "../components/sprite";
 import Health from "../components/health";
-import Disc from "../components/disc";
-import Pickup from "../components/pickup";
-import ProjectileWeapon from "../components/projectile-weapon";
-import * as util from "util";
-import math from "../util/math";
 import weaponPickup from "../assemblage/weapon-pickup";
-import enemy from "../assemblage/enemy";
+import SpatialAwareness from "../components/spatial-awareness";
+import CollisionBox from "../components/collision-box";
+import ground from "../assemblage/ground";
 const Vector2 = require('gl-matrix').vec2;
 
 export default class TilemapSystem extends ECS.System {
@@ -25,6 +20,7 @@ export default class TilemapSystem extends ECS.System {
     }
 
     enter(entity) {
+
         // add the other entities
         let tiles = entity.components.tilemap.tiles;
         entity.tileEntities = [];
@@ -35,62 +31,9 @@ export default class TilemapSystem extends ECS.System {
                 let tileX = (x * this.tileSize) + entity.components.position.x;
                 let tileY = (y * this.tileSize) + entity.components.position.y;
 
-                switch (tiles[y][x]) {
-                    case 1:
-                        // The tile
-                        let tile = new ECS.Entity([
-                            new Health({
-                                amount: 1000
-                            }),
-                            new Sprite({
-                                src: './assets/block.png',
-                                anchorX: 0,
-                                anchorY: 0
-                            }),
-                            new Position({
-                                x: tileX,
-                                y: tileY
-                            }),
-                            new SpatialAwareness(),
-                            new CollisionBox({
-                                active: false,
-                                anchor: Vector2.fromValues(0, 0),
-                                width: this.tileSize,
-                                height: this.tileSize
-                            })
-                        ]);
-                        entity.tileEntities.push(tile);
-                        this.core.addEntity(tile);
-                        break;
-                    case 2:
-                        // The tile
-                        let grassTile = new ECS.Entity([
-                            new Health(),
-                            new Sprite({
-                                src: './assets/grass.png',
-                                anchorX: 0,
-                                anchorY: 0
-                            }),
-                            new Position({
-                                x: tileX,
-                                y: tileY
-                            }),
-                            new SpatialAwareness(),
-                            new CollisionBox({
-                                anchor: Vector2.fromValues(0, 0),
-                                width: this.tileSize,
-                                height: this.tileSize
-                            })
-                        ]);
-                        entity.tileEntities.push(grassTile);
-                        this.core.addEntity(grassTile);
-                        break;
-                    case 3:
-                        this.core.addEntity(weaponPickup(tileX, tileY));
-                        break;
-                    default:
-                        break;
-                }
+                let groundTile = ground(tiles[y][x], tileX, tileY);
+                entity.tileEntities.push(groundTile);
+                this.core.addEntity(groundTile);
             }
         }
     }

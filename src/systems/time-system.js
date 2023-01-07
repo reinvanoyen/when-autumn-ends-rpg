@@ -12,7 +12,7 @@ export default class TimeSystem extends ECS.System {
 
         this.renderingSystem = renderingSystem;
 
-        this.worldTime = new WorldTime(10, 1);
+        this.worldTime = new WorldTime(12, 1);
 
         this.timeAmbientColorFilter = new Ambient();
         this.dayAmbientColorFilter = new Ambient();

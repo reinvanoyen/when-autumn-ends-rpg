@@ -1,4 +1,5 @@
 import ECS from 'tnt-ecs';
+import Messages from "../core/messages";
 
 export default class PickupSystem extends ECS.System {
 
@@ -29,10 +30,18 @@ export default class PickupSystem extends ECS.System {
                     collidingEntity.components.tag &&
                     collidingEntity.components.tag.string === 'player'
                 ) {
+                    pickup.incrementValue.forEach(data => {
+                        let [component, property, value] = data;
+                        if (collidingEntity.components[component]) {
+                            collidingEntity.components[component][property] = collidingEntity.components[component][property] + value;
+                        }
+                    });
+
                     pickup.add.forEach(component => {
                         collidingEntity.addComponent(component);
                     });
 
+                    Messages.trigger('pickup');
                     this.core.removeEntity(entity);
                 }
             });

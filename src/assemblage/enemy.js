@@ -11,20 +11,23 @@ import Disc from "../components/disc";
 import Health from "../components/health";
 import Tag from "../components/tag";
 import Target from "../components/target";
-import math from "../util/math";
 import Follow from "../components/follow";
+import ProjectileWeapon from "../components/projectile-weapon";
+import AiController from "../components/ai-controller";
+import projectileWeapon from "./projectile-weapon";
 const Vector2 = require('gl-matrix').vec2;
 
-export default function enemy(followEntity) {
+export default function enemy(x, y, followEntity) {
 
     return new ECS.Entity([
         new Tag({string: 'enemy'}),
         new Follow({entity: followEntity}),
-        new Position({x: math.randBetween(0, 3000), y: math.randBetween(0, 3000)}),
+        new AiController({entity: followEntity}),
+        new Position({x, y}),
+        new Target({x, y}),
         new Velocity(),
-        new Target({x: math.randBetween(0, 3000), y: math.randBetween(0, 3000)}),
         new Disc({radius: 10, color: 0xf14000}),
-        new Health(),
+        new Health({health: 500}),
         new SpatialAwareness(),
         new CollisionReaction(),
         new CollisionBox({
@@ -32,6 +35,6 @@ export default function enemy(followEntity) {
             width: 20,
             height: 20
         }),
-        new WalkingBehavior()
+        projectileWeapon(),
     ]);
 };

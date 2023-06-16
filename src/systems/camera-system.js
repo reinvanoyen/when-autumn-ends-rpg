@@ -9,7 +9,7 @@ export default class CameraSystem extends ECS.System {
     constructor(renderingSystem) {
         super();
         this.renderingSystem = renderingSystem;
-        this.prevPosition = Vector2.create();
+        this.prevPosition = null;
 
         this.width = window.innerWidth;
         this.height = window.innerHeight;
@@ -20,16 +20,16 @@ export default class CameraSystem extends ECS.System {
     }
 
     enter(entity) {
-        //
+        this.prevPosition = Vector2.fromValues(entity.components.position.x, entity.components.position.y);
     }
 
     update(entity) {
 
         let {camera, position} = entity.components;
 
-        let cameraPositionVec2 = Vector2.create();
+        let cameraPositionVec2 = Vector2.fromValues(position.x, position.y);
         let cameraTargetPositionVec2 = Vector2.fromValues(position.x, position.y);
-        Vector2.lerp(cameraPositionVec2, this.prevPosition, cameraTargetPositionVec2, .075);
+        Vector2.lerp(cameraPositionVec2, this.prevPosition, cameraTargetPositionVec2, .05);
 
         this.renderingSystem.root.position.x = -cameraPositionVec2[0] * camera.zoom + (this.renderingSystem.width / 2) + camera.offsetX;
         this.renderingSystem.root.position.y = -cameraPositionVec2[1] * camera.zoom + (this.renderingSystem.height / 2) + camera.offsetY;

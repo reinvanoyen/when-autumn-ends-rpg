@@ -2,14 +2,15 @@
 
 import ECS from 'tnt-ecs';
 
-export default class CharacterController extends ECS.Component {
+export default class AiController extends ECS.Component {
 
     getName() {
-        return 'controller';
+        return 'aiController';
     }
 
     getDefaults() {
         return {
+            entity: null,
             keyUp: false,
             keyRight: false,
             keyDown: false,

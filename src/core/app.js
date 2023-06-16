@@ -60,6 +60,8 @@ import enemy from "../assemblage/enemy";
 import TargetMovementSystem from "../systems/target-movement-system";
 import FollowSystem from "../systems/follow-system";
 import WorldMapSystem from "../systems/world-map-system";
+import weaponPickup from "../assemblage/weapon-pickup";
+import AiControlSystem from "../systems/ai-control-system";
 
 export default class App {
 
@@ -103,6 +105,7 @@ export default class App {
         this.ecs.addSystem(new CollisionPositionSystem());
         this.ecs.addSystem(new CollisionReactionSystem());
         this.ecs.addSystem(new CollisionExplosionSystem());
+        this.ecs.addSystem(new AiControlSystem());
         this.ecs.addSystem(new ProjectileWeaponSystem());
         this.ecs.addSystem(new DamageSystem());
         this.ecs.addSystem(new PickupSystem());
@@ -111,12 +114,37 @@ export default class App {
         this.ecs.addSystem(new FollowSystem());
         this.ecs.addSystem(new HealthSystem());
 
-        let playerEntity = player(60000, 35000);
+        let playerEntity = player(31200, 32010);
         this.ecs.addEntity(playerEntity);
 
-        for (let i = 0; i < 20; i++) {
-            this.ecs.addEntity(enemy(playerEntity.getId()));
-        }
+        const scoreEl = document.createElement('div');
+        scoreEl.style.position = 'fixed';
+        scoreEl.style.fontSize = '40px';
+        scoreEl.style.bottom = '20px';
+        scoreEl.style.right = '20px';
+        scoreEl.textContent = '0';
+        document.body.appendChild(scoreEl);
+
+        const healthEl = document.createElement('div');
+        healthEl.style.position = 'fixed';
+        healthEl.style.fontSize = '40px';
+        healthEl.style.bottom = '20px';
+        healthEl.style.left = '20px';
+        healthEl.textContent = playerEntity.components.health.amount;
+        document.body.appendChild(healthEl);
+
+        Messages.addListener('damage', () => healthEl.textContent = playerEntity.components.health.amount);
+        Messages.addListener('pickup', () => healthEl.textContent = playerEntity.components.health.amount);
+
+        Messages.addListener('enemy.death', () => {
+            scoreEl.textContent = parseInt(scoreEl.textContent) + 10;
+        });
+
+        Messages.addListener('player.death', () => {
+            //
+        });
+
+        Messages.trigger('player', {entity: playerEntity});
 
         let debug = false;
         document.addEventListener('keypress', e => {

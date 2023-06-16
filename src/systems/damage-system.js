@@ -1,4 +1,5 @@
 import ECS from 'tnt-ecs';
+import Messages from "../core/messages";
 
 export default class DamageSystem extends ECS.System {
 
@@ -26,6 +27,7 @@ export default class DamageSystem extends ECS.System {
 
                 if (entity && entity.components.health) {
                     entity.components.health.amount = entity.components.health.amount - dealsDamage.amount;
+                    Messages.trigger('damage');
                 }
             });
         }

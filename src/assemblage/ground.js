@@ -1,6 +1,10 @@
 import ECS from "tnt-ecs";
 import Sprite from "../components/sprite";
 import Position from "../components/position";
+import SpatialAwareness from "../components/spatial-awareness";
+import CollisionBox from "../components/collision-box";
+import Health from "../components/health";
+import {vec2 as Vector2} from "gl-matrix";
 
 export default function ground(tileType, x, y) {
 
@@ -21,6 +25,13 @@ export default function ground(tileType, x, y) {
             anchorY: 0,
             group: 'backGroup'
         }),
+        new SpatialAwareness(),
+        new CollisionBox({
+            anchor: Vector2.fromValues(0, 0),
+            width: 64,
+            height: 64
+        }),
+        new Health({amount: 1000}),
         new Position({x, y})
     ]);
 }

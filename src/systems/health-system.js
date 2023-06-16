@@ -1,4 +1,6 @@
 import ECS from 'tnt-ecs';
+import enemy from "../assemblage/enemy";
+import Messages from "../core/messages";
 
 export default class HealthSystem extends ECS.System {
 
@@ -19,6 +21,19 @@ export default class HealthSystem extends ECS.System {
         let { health } = entity.components;
 
         if (health.amount <= 0) {
+
+            if (
+                entity.components.tag &&
+                entity.components.tag.string === 'player'
+            ) {
+                Messages.trigger('player.death');
+            } else if (
+                entity.components.tag &&
+                entity.components.tag.string === 'enemy'
+            ) {
+                Messages.trigger('enemy.death');
+            }
+
             this.core.removeEntity(entity);
         }
     }

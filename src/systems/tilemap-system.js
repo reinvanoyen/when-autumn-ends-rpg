@@ -6,6 +6,9 @@ import weaponPickup from "../assemblage/weapon-pickup";
 import SpatialAwareness from "../components/spatial-awareness";
 import CollisionBox from "../components/collision-box";
 import ground from "../assemblage/ground";
+import enemy from "../assemblage/enemy";
+import Messages from "../core/messages";
+import healthPickup from "../assemblage/health-pickup";
 const Vector2 = require('gl-matrix').vec2;
 
 export default class TilemapSystem extends ECS.System {
@@ -13,6 +16,11 @@ export default class TilemapSystem extends ECS.System {
     constructor() {
         super();
         this.tileSize = 64;
+        this.playerId = null;
+
+        Messages.addListener('player', data => {
+            this.playerId = data.entity.getId();
+        });
     }
 
     test(entity) {
@@ -31,9 +39,23 @@ export default class TilemapSystem extends ECS.System {
                 let tileX = (x * this.tileSize) + entity.components.position.x;
                 let tileY = (y * this.tileSize) + entity.components.position.y;
 
-                let groundTile = ground(tiles[y][x], tileX, tileY);
-                entity.tileEntities.push(groundTile);
-                this.core.addEntity(groundTile);
+                if ((tiles[y][x] !== 1)) {
+
+                    if (tiles[y][x] === 'x' && this.playerId) {
+                        let enemyEntity = enemy(tileX, tileY, this.playerId);
+                        this.core.addEntity(enemyEntity);
+                    } else if (tiles[y][x] === 'p') {
+                        let weaponEntity = weaponPickup(tileX, tileY);
+                        this.core.addEntity(weaponEntity);
+                    } else if (tiles[y][x] === 'h') {
+                        let healthEntity = healthPickup(tileX, tileY);
+                        this.core.addEntity(healthEntity);
+                    } else {
+                        let groundTile = ground(tiles[y][x], tileX, tileY);
+                        entity.tileEntities.push(groundTile);
+                        this.core.addEntity(groundTile);
+                    }
+                }
             }
         }
     }

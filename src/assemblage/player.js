@@ -18,7 +18,7 @@ export default function player(x, y) {
     return new ECS.Entity([
         new Tag({string: 'player'}),
         new Disc({radius: 10}),
-        new Health(),
+        new Health({amount: 100}),
         new SpatialAwareness(),
         new Position({x, y}),
         new Velocity(),

@@ -15,21 +15,30 @@ import Sprite from "../components/sprite";
 export default class ProjectileWeaponSystem extends ECS.System {
 
     test(entity) {
-        return (entity.components.position && entity.components.velocity && entity.components.controller && entity.components.projectileWeapon);
+        return (
+            entity.components.position && entity.components.velocity &&
+            (entity.components.controller || entity.components.aiController)
+            && entity.components.projectileWeapon
+        );
     }
 
     enter(entity) {
 
-        entity.crosshair = new ECS.Entity([
-            new Position(),
-            new Sprite({
-                src: 'assets/crosshair.png',
-                anchorX: .5,
-                anchorY: .5,
-            })
-        ]);
+        if (
+            entity.components.tag &&
+            entity.components.tag.string === 'player'
+        ) {
+            entity.crosshair = new ECS.Entity([
+                new Position(),
+                new Sprite({
+                    src: 'assets/crosshair.png',
+                    anchorX: .5,
+                    anchorY: .5,
+                })
+            ]);
 
-        this.core.addEntity(entity.crosshair);
+            this.core.addEntity(entity.crosshair);
+        }
     }
 
     exit(entity) {
@@ -38,11 +47,15 @@ export default class ProjectileWeaponSystem extends ECS.System {
 
     update(entity) {
 
-        let { controller, position, projectileWeapon } = entity.components;
+        let { aiController, controller, position, projectileWeapon } = entity.components;
+
+        controller = controller || aiController;
 
         // Update crosshair
-        entity.crosshair.components.position.x = controller.mouseX;
-        entity.crosshair.components.position.y = controller.mouseY;
+        if (entity.crosshair) {
+            entity.crosshair.components.position.x = controller.mouseX;
+            entity.crosshair.components.position.y = controller.mouseY;
+        }
 
         // Is weapon on cooldown?
         if (projectileWeapon.currentCooldown > 0) {
@@ -53,13 +66,15 @@ export default class ProjectileWeaponSystem extends ECS.System {
         }
 
         // Are we firing?
-        if (entity.components.controller.mouseDown) {
+        if (controller.mouseDown && controller.mouseX && controller.mouseY) {
 
             projectileWeapon.currentCooldown = projectileWeapon.cooldown;
 
             let velocityVec2 = Vector2.create();
             let positionVec2 = Vector2.fromValues(position.x, position.y);
+
             let crosshairVec2 = Vector2.fromValues(controller.mouseX, controller.mouseY);
+
             Vector2.subtract(velocityVec2, crosshairVec2, positionVec2);
             Vector2.normalize(velocityVec2, velocityVec2);
 

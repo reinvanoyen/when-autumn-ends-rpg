@@ -8,6 +8,7 @@ export default class Pickup extends ECS.Component {
 
     getDefaults() {
         return {
+            incrementValue: [],
             add: [],
             remove: []
         };
